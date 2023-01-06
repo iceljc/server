@@ -1,6 +1,8 @@
 using AuthorizationSample.Data;
 using AuthorizationSample.Schema;
 using GraphQL;
+using GraphQL.Server.Samples.Authorization.AuthorizeRequirements;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +26,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddAuthorization(c => c.AddPolicy("MyPolicy", cp => cp.RequireRole("User")));
+builder.Services.AddAuthorization(c => c.AddPolicy("MyPolicy", policy => policy.AddRequirements(new CustomRequirement())));
+builder.Services.AddScoped<IAuthorizationHandler, CustomRequirementHandler>();
 builder.Services.AddRazorPages();
 
 // ---- added code for GraphQL --------
